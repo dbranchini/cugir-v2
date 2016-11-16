@@ -1,0 +1,402 @@
+<!DOCTYPE html> 
+
+<html lang="en">
+<head>
+
+  <meta charset=utf-8> 
+  <meta http-equiv=X-UA-Compatible content="IE=edge"> 
+  <meta name=viewport content="width=device-width,initial-scale=1">
+
+  <title>CUGIR - v2</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-1.12.3.min.js" integrity="sha256-aaODHAgvwQW1bFOGXMeX+pC4PZIPsvn2h1sArYOhgXQ=" crossorigin="anonymous"></script>
+
+  <!-- Bootstrap JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <!--[if lt IE 9]>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+  <![endif]-->
+
+  <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <header>
+    <img src="images/cugir_logo.png">
+      
+    <div class="nav-primary text-right">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Help</a>
+    </div>
+
+    <div class="nav-secondary text-right">
+      <a href="#">Bookmarks</a>
+      <a href="#">History</a>
+      <a href="#">Login</a>
+    </div>
+  </header> 
+
+  <div class="container-fluid">
+
+    <div class="col-sm-7">
+
+      <div id="results-panel">
+
+        <div class="col-sm-3">
+          <!-- <span class="input-group-btn"> -->
+            <button id="showFilters" class="btn btn-primary">
+              <span>Data Filters</span>&nbsp;
+              <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
+            <button id="hideFilters" class="btn btn-primary">
+              <span>Close Filters</span>&nbsp;
+              <span class="glyphicon glyphicon-remove"></span>
+            </button>
+            
+          <!-- </span> -->     
+        </div>
+
+        <div class="col-sm-9">
+          <div class="input-group">
+            <label class="sr-only" for="q">search for</label>
+            <input id="g" type="text" class="form-control" placeholder="Search">
+            <span class="input-group-btn">
+              <button id="search" class="btn btn-primary search-btn" type="submit">
+                <span class="submit-search-text">Search</span>
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
+            </span>
+          </div>
+        </div>
+        
+        <div id="panelWelcome">
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+          <div class="row">
+            <div class="col-sm-6 col-sm-offset-3">
+              <div class="welcome text-center">
+              CUGIR provides geospatial data and metadata with a New York State emphasis and resources relevant to: 
+              </div>
+            </div>
+          </div>
+          <p>&nbsp;</p>
+          <div class="row welcome-topics">
+            <ul class="col-sm-3 col-sm-offset-3 list-unstyled">
+              <li>Agriculture</li>
+              <li>Biology</li>
+              <li>Climate</li>
+              <li>Economy</li>
+              <li>Environment</li>
+            </ul>
+            <ul class="col-sm-3 list-unstyled">
+              <li>Geology</li>
+              <li>Health</li>
+              <li>Structure</li>
+              <li>Transportation</li>
+              <li>Utilities</li>
+            </ul>
+
+            <div class="col-sm-6 col-sm-offset-3">
+              <span class="input-group-btn">
+                <button id="showAllFilters" class="btn btn-default btn-block" type="submit">
+                  <span class="submit-search-text">All Data Filters</span>&nbsp;
+                  <span class="glyphicon glyphicon-menu-hamburger"></span>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+
+
+        <div id="panelResults">
+          <div id="search-results">
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            <div class="searched-for">
+              <span class="constraints-label">You searched for:</span>&nbsp;
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-default">farming</button>
+                <button type="button" class="btn btn-danger">
+                  <span class="glyphicon glyphicon-remove"></span>
+                  <span class="sr-only">Remove</span>
+                </button>
+              </div>
+              <button type="button" class="btn btn-sm btn-warning pull-right" id="startOver">Start Over</button>
+            </div>
+            
+
+            <hr>
+            <div class="options-paging">
+              <div class="options pull-right">
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Sort by relevance <span class="caret"></span>
+                </button>
+                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  10 per page <span class="caret"></span>
+                </button>
+              </div>
+              <div class="paging">
+                « Previous | 1 - 10 of 129 | Next »
+              </div>
+            </div>
+            <br>
+            <div class="results">
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+              <h3>Agricultural Districts, Albany County NY, 2015</h3>
+              <p>Cornell Institute for Resource Information Sciences (Cornell IRIS). abstract=These GIS files represent geographic boundaries for lands that are under the protection of NYS Agricultural District Law, administered by ...</p>
+
+            </div>
+          </div>
+        </div>
+
+        <div id="panelFilters">
+          <p>&nbsp;</p>
+          <h1>Browse or Filter by: </h1>
+          
+          <div class="panel-group" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+                  <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTopic" aria-expanded="true" aria-controls="collapseTopic">
+                    Topic
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTopic" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                  <ul class="row list-unstyled">
+                    <li class="col-sm-4">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">Agriculture</a></li>
+                        <li><a href="#">Biology</a></li>
+                        <li><a href="#">Boundaries</a></li>
+                        <li><a href="#">Climate</a></li>
+                        <li><a href="#">Economy</a></li>
+                        <li><a href="#">Elevation</a></li>
+                        <li><a href="#">Environment</a></li>
+                      </ul>
+                    </li>
+                    <li class="col-sm-4">
+                      <ul class="list-unstyled">  
+                        <li><a href="#" class="nav-child">Geology</a></li>
+                        <li><a href="#">Health</a></li>
+                        <li><a href="#">Imagery</a></li>
+                        <li><a href="#">Basemaps</a></li>
+                        <li><a href="#">Landcover</a></li>
+                        <li><a href="#">Military</a></li>
+                        <li><a href="#">Inland Waters</a></li>
+                      </ul>
+                    </li>
+                    <li class="col-sm-4">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">Location</a></li>
+                        <li><a href="#">Oceans</a></li>
+                        <li><a href="#">Property</a></li>
+                        <li><a href="#">Society</a></li>
+                        <li><a href="#">Structure</a></li>
+                        <li><a href="#">Transportation</a></li>
+                        <li><a href="#">Utilities</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingTwo">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    Collection
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                <div class="panel-body">
+                  <ul class="row list-unstyled">
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingThree">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    Year
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                <div class="panel-body">
+                  <ul class="row list-unstyled">
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">2015</a></li>
+                        <li><a href="#">2014</a></li>
+                        <li><a href="#">2013</a></li>
+                        <li><a href="#">2012</a></li>
+                        <li><a href="#">2011</a></li>
+                      </ul>
+                    </li>
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">  
+                        <li><a href="#" class="nav-child">2010</a></li>
+                        <li><a href="#">2009</a></li>
+                        <li><a href="#">2008</a></li>
+                        <li><a href="#">2007</a></li>
+                        <li><a href="#">2006</a></li>
+                      </ul>
+                    </li>
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">2005</a></li>
+                        <li><a href="#">2004</a></li>
+                        <li><a href="#">2003</a></li>
+                        <li><a href="#">2002</a></li>
+                        <li><a href="#">2001</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingFour">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    Source
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                <div class="panel-body">
+                  <ul class="row list-unstyled">
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingFive">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                    Publisher
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+                <div class="panel-body">
+                  <ul class="row list-unstyled">
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="headingSix">
+                <h4 class="panel-title">
+                  <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                    Data Type
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
+                <div class="panel-body">
+                  <ul class="row list-unstyled">
+                    <li class="col-sm-3">
+                      <ul class="list-unstyled">
+                        <li><a href="#" class="nav-child">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                        <li><a href="#">...</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div> 
+
+          <div class="pull-right">
+
+            <a class="btn btn-default" id="cancelFilters" role="button">
+              Cancel
+            </a> 
+
+            <a class="btn btn-primary" id="showResults" role="button">
+              Apply
+            </a> 
+          
+          </div>
+
+          <p>&nbsp;</p>
+          <p>&nbsp;</p>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="col-sm-5">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <script src="js/scripts.js"></script>
+</body>
+</html>
